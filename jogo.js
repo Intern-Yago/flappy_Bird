@@ -4,6 +4,18 @@ sprites.src = "./sprites.png"
 const canvas = document.querySelector('canvas')
 const contexto = canvas.getContext('2d')
 
+function colisao(personagem1, personagem2){
+    const p1Y = personagem1.y + personagem1.H
+    const p2Y = personagem2.y
+
+    if(p1Y >= p2Y){
+        return true
+    }
+    else{
+        return false
+    }
+}
+function criarFlappy() {
 const flappy = {
     sx: 0,
     yx: 0,
@@ -15,6 +27,10 @@ const flappy = {
     g: 0.25,
     pulo:4.6,
     atualiza(){
+        if(colisao(flappy, chao)){
+            mudaTela(telas.start)
+            return
+        }
         flappy.vel = flappy.vel + flappy.g
         flappy.y = flappy.y + flappy.vel
     },
@@ -31,7 +47,8 @@ const flappy = {
         flappy.vel = -flappy.pulo
     }
 }
-
+return flappy
+}
 
 const chao = {
     sx: 0,
@@ -91,20 +108,27 @@ const inicio = {
     }
 }
 
+const globais = {}
 let telAtiva={}
 function mudaTela(novaTela){
     telAtiva = novaTela
+    if(telAtiva.inicializa){
+        telAtiva.inicializa()
+    }
 }
 
 const telas = {
     //COMEÇO DO JOGO
     start: {
+        inicializa(){
+            globais.flappy = criarFlappy()
+        },
         desenhar(){
-             back.desenhar()
+            back.desenhar()
             back.desenhar(back.W, fundo=false)
             chao.desenhar()
             chao.desenhar(chao.W)
-            flappy.desenhar()
+            globais.flappy.desenhar()
             inicio.desenhar()
            
         },
@@ -122,13 +146,13 @@ const telas = {
             back.desenhar(back.W, fundo=false)
             chao.desenhar()
             chao.desenhar(chao.W)
-            flappy.desenhar()
+            globais.flappy.desenhar()
         },
         click(){
-            flappy.pula()
+            globais.flappy.pula()
         },
         atualiza(){
-            flappy.atualiza()
+            globais.flappy.atualiza()
         }
     },
 
