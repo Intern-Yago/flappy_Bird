@@ -158,29 +158,41 @@ function criaCanos(){
         },
         espaco: 80,
         desenha(){
-            const yRandom = -150
-            const espacamento = 90
-
-            const canoCeuX = 220
-            const canoCeuY = yRandom
-            contexto.drawImage(
-                sprites,
-                canos.ceu.sX, canos.ceu.sY,
-                canos.largura, canos.altura,
-                canoCeuX, canoCeuY,
-                canos.largura, canos.altura
-            )
-
-            const canoChaoX=220
-            const canoChaoY=canos.altura + espacamento + yRandom
-            contexto.drawImage(
-                sprites,
-                canos.chao.sX, canos.chao.sY,
-                canos.largura, canos.altura,
-                canoChaoX, canoChaoY,
-                canos.largura, canos.altura,
-            )
+            canos.pares.forEach(function(par){
+                const yRandom = par.y
+                const espacamento = 90
+    
+                const canoCeuX = par.x
+                const canoCeuY = yRandom
+                contexto.drawImage(
+                    sprites,
+                    canos.ceu.sX, canos.ceu.sY,
+                    canos.largura, canos.altura,
+                    canoCeuX, canoCeuY,
+                    canos.largura, canos.altura
+                )
+    
+                const canoChaoX=par.x
+                const canoChaoY=canos.altura + espacamento + yRandom
+                contexto.drawImage(
+                    sprites,
+                    canos.chao.sX, canos.chao.sY,
+                    canos.largura, canos.altura,
+                    canoChaoX, canoChaoY,
+                    canos.largura, canos.altura,
+                )   
+            })
         },
+        pares: [{   
+            x: 100,
+            y: -150 * (Math.random() + 1),
+        }],
+        atualiza(){
+            const passou100frames = frames%100 === 0
+            if(passou100frames){
+            
+            }
+        }
     }
     return canos
 }
@@ -217,6 +229,7 @@ const telas = {
         },
         atualiza(){
             globais.chao.atualizar()
+            globais.canos.atualiza()
         }
     },
 
