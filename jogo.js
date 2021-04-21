@@ -1,3 +1,8 @@
+const hit = new Audio()
+hit.src='./efeitos/efeitos_hit.wav'
+const pulou = new Audio()
+pulou.src='./efeitos/efeitos_pulo.wav'
+
 const sprites = new Image()
 sprites.src = "./sprites.png"
 
@@ -28,11 +33,15 @@ const flappy = {
     pulo:4.6,
     atualiza(){
         if(colisao(flappy, chao)){
-            mudaTela(telas.start)
-            return
+            hit.play()
+            setTimeout(()=>{
+                mudaTela(telas.start)
+            }, 400)
+             return
         }
         flappy.vel = flappy.vel + flappy.g
         flappy.y = flappy.y + flappy.vel
+        
     },
     desenhar(){
         contexto.drawImage(
@@ -44,6 +53,7 @@ const flappy = {
         )   
     },
     pula(){ 
+        pulou.play()
         flappy.vel = -flappy.pulo
     }
 }
