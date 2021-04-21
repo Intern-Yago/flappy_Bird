@@ -22,23 +22,6 @@ const flappy = {
     }
 }
 
-const chao = {
-    sx: 0,
-    sy: 610,
-    W: 224,
-    H: 112,
-    dx: 0,
-    dy: canvas.height - 112,
-    desenhar(incremento=0){
-        contexto.drawImage(
-            sprites,
-            chao.sx, chao.sy,
-            chao.W, chao.H,
-            chao.dx + incremento, chao.dy,
-            chao.W, chao.H,
-        )
-    }
-}
 
 const chao = {
     sx: 0,
@@ -79,3 +62,14 @@ const back = {
         )
     }
 }
+
+function loop(){
+    back.desenhar()
+    back.desenhar(back.W, fundo=false)
+    chao.desenhar()
+    chao.desenhar(chao.W)
+    flappy.desenhar()
+    requestAnimationFrame(loop)
+}
+
+loop()
