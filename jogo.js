@@ -162,48 +162,64 @@ function criaCanos() {
         espaco: 80,
         desenha(){
             canos.pares.forEach(function(par){
-                const Yrandom = par.y
-                const espacamento = 60;
+                const yRandom = par.y
+                const espacamento = 90;
 
-                const ceux = par.x
-                const ceuy = Yrandom
+                const canoCeuX = par.x
+                const canoCeuY = yRandom
                 
                 contexto.drawImage(
                     sprites,
                     canos.ceu.sx, canos.ceu.sy,
                     canos.W, canos.H,
-                    ceux, ceuy,
+                    canoCeuX, canoCeuY,
                     canos.W, canos.H,
                 )
 
-                const chaox = par.x
-                const chaoy = canos.H + espacamento + Yrandom
+                const canoChaoX = par.x
+                const canoChaoY = canos.H + espacamento + yRandom
                 contexto.drawImage(
                     sprites,
                     canos.chao.sx, canos.chao.sy,
                     canos.W, canos.H,
-                    chaox, chaoy,
+                    canoChaoX, canoChaoY,
                     canos.W, canos.H,
                 )
             })
+        },
+        colisao(par){
+
+            if(globais.flappy.x >= par.x){
+                console.log('Flappy está nos canos')
+                
+                //Console.log(globais.flappy.y, par.y, canos.canoChao)
+
+            }
+            
+            return true
+
+            return false
         },
         pares: [],
         atualiza(){
             const passouCemFrames = frames % 100 === 0
             if(passouCemFrames){
-                console.log('Passou')
                 canos.pares.push({
                     x: canvas.width,
-                    y:-150 * (Math.random() + 1),
+                    y: -350
+                    //y:-150 * (Math.random() + 1),
                 })   
             }
             canos.pares.forEach(function(par){
-                par.x -= 2
+                par.x = par.x - 2
+                if(canos.colisao(par)){
+                    console.log('Perdeu')
+                }
                 if(par.x + canos.H <= 0){
                     canos.pares.shift()
                 }
-            })
-        }
+            }) 
+    }
             
     }
     return canos
@@ -229,10 +245,11 @@ const telas = {
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
+            globais.flappy.desenhar()
             globais.canos.desenha()
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
-            globais.flappy.desenhar()
+            
             
             //inicio.desenhar()
            
