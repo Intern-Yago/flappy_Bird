@@ -1,9 +1,11 @@
 let frames = 0 
+//Add efeitos
 const hit = new Audio()
 hit.src='./efeitos/efeitos_hit.wav'
 const pulou = new Audio()
 pulou.src='./efeitos/efeitos_pulo.wav'
 
+//select canvas
 const sprites = new Image()
 sprites.src = "./sprites.png"
 
@@ -21,6 +23,8 @@ function colisao(personagem1, personagem2){
         return false
     }
 }
+
+//FlappyBird
 function criarFlappy() {
 const flappy = {
     sx: 0,
@@ -40,10 +44,12 @@ const flappy = {
             }, 400)
              return
         }
+        //gravidade do flappy
         flappy.vel = flappy.vel + flappy.g
         flappy.y = flappy.y + flappy.vel
         
     },
+    //Animação de bater asas{
     frameAtual: 0,
     atualizaFrame(){
         const intervalo = 10
@@ -60,6 +66,8 @@ const flappy = {
         {sX: 0, sY:26},
         {sX: 0, sY:52},
     ],
+    //}
+
     desenhar(){
         flappy.atualizaFrame()
         const {sX, sY} = flappy.movimentos[flappy.frameAtual]
@@ -78,6 +86,7 @@ const flappy = {
 }
 return flappy
 }
+
 function criarChao(){
     const chao = {
         sx:  0,
@@ -95,6 +104,8 @@ function criarChao(){
                 chao.W, chao.H,
             )
         },
+
+        //chão infinito
         atualizar(){
             const movDoChao = 1
             const pete = chao.H /2
@@ -104,6 +115,7 @@ function criarChao(){
     }
     return chao
 }
+
 const back = {
     sx:390,
     sy:0,
@@ -111,10 +123,13 @@ const back = {
     H:204,
     x:0,
     y:canvas.height - 204,
+    //o parâmetro fundo foi usado para o fundo de uma imagem n sobrepor a outra
+    //o incremento foi para não ter a repetição do drawImage (mesmo método usado para o chão)
     desenhar(incremento=0, fundo=true){
         if (fundo == true){
-        contexto.fillStyle = '#70c5ce';
-        contexto.fillRect(0,0, canvas.width, canvas.height)
+            // add fundo azul
+            contexto.fillStyle = '#70c5ce';
+            contexto.fillRect(0,0, canvas.width, canvas.height)
         }
         contexto.drawImage(
             sprites,
@@ -126,6 +141,7 @@ const back = {
     }
 }
 
+//mensagem de início
 const inicio = {
     sx:134,
     sy:0,
@@ -161,10 +177,10 @@ function criaCanos(){
             canos.pares.forEach(function(par){
                 const yRandom = par.y
                 const espacamento = 90
-    
+
+                //Cano Céu
                 const canoCeuX = par.x
                 const canoCeuY = yRandom
-
                 contexto.drawImage(
                     sprites,
                     canos.ceu.sX, canos.ceu.sY,
@@ -172,9 +188,18 @@ function criaCanos(){
                     canoCeuX, canoCeuY,
                     canos.largura, canos.altura
                 )
-    
+                //-------------------------------------
+                //Cano Chão
                 const canoChaoX=par.x
                 const canoChaoY=canos.altura + espacamento + yRandom
+                contexto.drawImage(
+                    sprites,
+                    canos.chao.sX, canos.chao.sY,
+                    canos.largura, canos.altura,
+                    canoChaoX, canoChaoY,
+                    canos.largura, canos.altura,
+                )
+                //------------------------------------
 
                 par.canoCeu = {
                     x: canoCeuX,
@@ -184,27 +209,25 @@ function criaCanos(){
                 par.canoChao = {
                     x: canoChaoX,
                     y: canoChaoY
-                }
-                contexto.drawImage(
-                    sprites,
-                    canos.chao.sX, canos.chao.sY,
-                    canos.largura, canos.altura,
-                    canoChaoX, canoChaoY,
-                    canos.largura, canos.altura,
-                )   
+                }   
             })
         },
         temColisao(par){
             const cabeca = globais.flappy.y
             const pe = globais.flappy.y + globais.flappy.H
             if(globais.flappy.x >= par.x){
+
+                //Flappy passou pelo cano, atualiza placar
                 globais.placar.atualiza()
+
+                //Verifica se ouve colisão{
                 if(cabeca <= par.canoCeu.y){
                     return true
                 }
                 if(pe >= par.canoChao.y){
                     return true
                 }
+                //}
             }
 
             return false
@@ -213,17 +236,22 @@ function criaCanos(){
         atualiza(){
             const passou100frames = frames%100 === 0
             if(passou100frames){
+                // adiciona canos após intervalo de frames
                 canos.pares.push({ 
                         x: canvas.width,
                         y: -150 * (Math.random() + 1),
                 })
             } 
             canos.pares.forEach(function(par){
+                //movimentação dos canos
                 par.x = par.x - 2
 
+                //colidiu
                 if(canos.temColisao(par)){
                     mudaTela(telas.start)
                 }
+
+                //elimina o primeiro cano
                 if(par.x + canos.largura <=0 ){
                     canos.pares.shift()
                 }
@@ -233,10 +261,11 @@ function criaCanos(){
     return canos
 }
 
-function criaPlacar(pontu = 0){
+function criaPlacar(){
     const placar = {
-        pontuacao:pontu,
+        pontuacao: 0,
         atualiza(){
+            //intervalo é a quantidade de frames que o Flappy fica dentro do cano
             const intervalo = 32
             const passouTime = frames % intervalo === 0
             if(passouTime){
@@ -244,6 +273,7 @@ function criaPlacar(pontu = 0){
             }
         },
         desenhar(){
+            //uso da fonte importada
             contexto.font = '35px "VT323"'
             contexto.textAlign='right'
             contexto.fillStyle = 'white'
@@ -253,7 +283,11 @@ function criaPlacar(pontu = 0){
     return placar
 }
 
+//definição das variáveis globais que foram/serão utilizadas
+//para adicionar mais uma global apenas basta escrever globais.nome_da_variável = valor
 const globais = {}
+
+//mudança das telas
 let telAtiva={}
 function mudaTela(novaTela){
     telAtiva = novaTela
@@ -262,6 +296,7 @@ function mudaTela(novaTela){
     }
 }
 
+//definição das telas
 const telas = {
     //COMEÇO DO JOGO
     start: {
@@ -290,7 +325,6 @@ const telas = {
     //DURANTE O JOGO
     jogo: {
         inicializa(){
-            ///////////////////////////
             globais.placar = criaPlacar()
         },
         desenhar(){
@@ -300,7 +334,6 @@ const telas = {
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
-            /////////////////////////
             globais.placar.desenhar()
         },
         click(){
@@ -310,14 +343,21 @@ const telas = {
             globais.canos.atualiza()
             globais.chao.atualizar()
             globais.flappy.atualiza()
-            /////////////////////////
-            //globais.placar.atualiza()
+            //aqui não teve a atualização do placar, pois já é feito quando Flappy passa pelo cano
         }
     },
 
     //FIM DO JOGO
     fim: {
+        desenha(){
+            gameOver.desenha()
+        },
+        atualiza(){
 
+        },
+        click(){
+            mudaTela(telas.start)
+        }
     }
 }
 
@@ -325,7 +365,8 @@ function loop(){
 
     telAtiva.desenhar()
     telAtiva.atualiza()
-    
+
+    //add de frames no jogo para atualizações
     frames++
     requestAnimationFrame(loop)
 }
@@ -336,6 +377,7 @@ function comando(){
     }
 }
 
+//se houver um click no canvas ou aperto da tecla espaço executa o pulo do Flappy
 canvas.addEventListener('click', comando)
 function verificar(e){
     if(e.code == 'Space'){
@@ -343,5 +385,5 @@ function verificar(e){
     }
 }
 
-mudaTela(telas.start)
+mudaTela(telas.fim)
 loop()
