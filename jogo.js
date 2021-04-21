@@ -164,6 +164,7 @@ function criaCanos(){
     
                 const canoCeuX = par.x
                 const canoCeuY = yRandom
+
                 contexto.drawImage(
                     sprites,
                     canos.ceu.sX, canos.ceu.sY,
@@ -174,6 +175,16 @@ function criaCanos(){
     
                 const canoChaoX=par.x
                 const canoChaoY=canos.altura + espacamento + yRandom
+
+                par.canoCeu = {
+                    x: canoCeuX,
+                    y: canos.altura + canoCeuY
+                }
+
+                par.canoChao = {
+                    x: canoChaoX,
+                    y: canoChaoY
+                }
                 contexto.drawImage(
                     sprites,
                     canos.chao.sX, canos.chao.sY,
@@ -183,6 +194,20 @@ function criaCanos(){
                 )   
             })
         },
+        temColisao(par){
+            const cabeca = globais.flappy.y
+            const pe = globais.flappy.y + globais.flappy.H
+            if(globais.flappy.x >= par.x){
+                if(cabeca <= par.canoCeu.y){
+                    return true
+                }
+                if(pe >= par.canoChao.y){
+                    return true
+                }
+            }
+
+            return false
+        },
         pares: [],
         atualiza(){
             const passou100frames = frames%100 === 0
@@ -191,9 +216,13 @@ function criaCanos(){
                         x: canvas.width,
                         y: -150 * (Math.random() + 1),
                 })
-            }
+            } 
             canos.pares.forEach(function(par){
                 par.x = par.x - 2
+
+                if(canos.temColisao(par)){
+                    mudaTela(telas.start)
+                }
                 if(par.x + canos.largura <=0 ){
                     canos.pares.shift()
                 }
@@ -224,10 +253,9 @@ const telas = {
             back.desenhar()
             back.desenhar(back.W, fundo=false)
             globais.flappy.desenhar()
-            globais.canos.desenha()
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
-            //inicio.desenhar()
+            inicio.desenhar()
            
         },
         click(){
@@ -235,7 +263,6 @@ const telas = {
         },
         atualiza(){
             globais.chao.atualizar()
-            globais.canos.atualiza()
         }
     },
 
@@ -244,6 +271,7 @@ const telas = {
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
+            globais.canos.desenha()
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
@@ -252,6 +280,8 @@ const telas = {
             globais.flappy.pula()
         },
         atualiza(){
+            globais.canos.atualiza()
+            globais.chao.atualizar()
             globais.flappy.atualiza()
         }
     },
