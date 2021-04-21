@@ -149,7 +149,6 @@ function verificar(e){
         if(telAtiva.click){
             telAtiva.click()
         }
-        console.log('press')
     }
 }
 
