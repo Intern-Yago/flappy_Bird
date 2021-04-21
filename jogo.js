@@ -9,22 +9,26 @@ const flappy = {
     yx: 0,
     W: 33,
     H: 24,
-    dx: 10, 
-    dy: 50,
+    x: 10, 
+    y: 50,
     vel: 0,
     g: 0.25,
+    pulo:4.6,
     atualiza(){
         flappy.vel = flappy.vel + flappy.g
-        flappy.dy = flappy.dy + flappy.vel
+        flappy.y = flappy.y + flappy.vel
     },
     desenhar(){
         contexto.drawImage(
             sprites,
             flappy.sx, flappy.yx,
             flappy.W, flappy.H,
-            flappy.dx, flappy.dy,
+            flappy.x, flappy.y,
             flappy.W, flappy.H,
         )   
+    },
+    pula(){ 
+        flappy.vel = -flappy.pulo
     }
 }
 
@@ -34,14 +38,14 @@ const chao = {
     sy: 610,
     W: 224,
     H: 112,
-    dx: 0,
-    dy: canvas.height - 112,
+    x: 0,
+    y: canvas.height - 112,
     desenhar(incremento=0){
         contexto.drawImage(
             sprites,
             chao.sx, chao.sy,
             chao.W, chao.H,
-            chao.dx + incremento, chao.dy,
+            chao.x + incremento, chao.y,
             chao.W, chao.H,
         )
     }
@@ -52,8 +56,8 @@ const back = {
     sy:0,
     W:275,
     H:204,
-    dx:0,
-    dy:canvas.height - 204,
+    x:0,
+    y:canvas.height - 204,
     desenhar(incremento=0, fundo=true){
         if (fundo == true){
         contexto.fillStyle = '#70c5ce';
@@ -63,7 +67,7 @@ const back = {
             sprites,
             back.sx, back.sy,
             back.W, back.H,
-            back.dx + incremento, back.dy,
+            back.x + incremento, back.y,
             back.W, back.H,
         )
     }
@@ -74,14 +78,14 @@ const inicio = {
     sy:0,
     W:174,
     H:152,
-    dx:(canvas.width/2) - 174/2,
-    dy:50,
+    x:(canvas.width/2) - 174/2,
+    y:50,
     desenhar(){
         contexto.drawImage(
             sprites,
             inicio.sx, inicio.sy,
             inicio.W, inicio.H,
-            inicio.dx, inicio.dy,
+            inicio.x, inicio.y,
             inicio.W, inicio.H,
         )
     }
@@ -120,6 +124,9 @@ const telas = {
             chao.desenhar(chao.W)
             flappy.desenhar()
         },
+        click(){
+            flappy.pula()
+        },
         atualiza(){
             flappy.atualiza()
         }
@@ -139,16 +146,16 @@ function loop(){
     requestAnimationFrame(loop)
 }
 
-canvas.addEventListener('click', function(){
+function comando(){
     if(telAtiva.click){
         telAtiva.click()
     }
-})
+}
+
+canvas.addEventListener('click', comando)
 function verificar(e){
     if(e.code == 'Space'){
-        if(telAtiva.click){
-            telAtiva.click()
-        }
+        comando()
     }
 }
 
