@@ -59,25 +59,29 @@ const flappy = {
 }
 return flappy
 }
+function criarChao(){
+    const chao = {
+        sx: 0,
+        sy: 610,
+        W: 224,
+        H: 112,
+        x: 0,
+        y: canvas.height - 112,
+        desenhar(incremento=0){
+            contexto.drawImage(
+                sprites,
+                chao.sx, chao.sy,
+                chao.W, chao.H,
+                chao.x + incremento, chao.y,
+                chao.W, chao.H,
+            )
+        },
+        atualizar(){
 
-const chao = {
-    sx: 0,
-    sy: 610,
-    W: 224,
-    H: 112,
-    x: 0,
-    y: canvas.height - 112,
-    desenhar(incremento=0){
-        contexto.drawImage(
-            sprites,
-            chao.sx, chao.sy,
-            chao.W, chao.H,
-            chao.x + incremento, chao.y,
-            chao.W, chao.H,
-        )
+        }
     }
+    return chao
 }
-
 const back = {
     sx:390,
     sy:0,
@@ -119,7 +123,6 @@ const inicio = {
 }
 
 
-
 const globais = {}
 let telAtiva={}
 function mudaTela(novaTela){
@@ -134,20 +137,22 @@ const telas = {
     start: {
         inicializa(){
             globais.flappy = criarFlappy()
+            globais.chao = criarChao()
         },
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
-            chao.desenhar()
-            chao.desenhar(chao.W)
+            globais.chao.desenhar()
+            globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
-            inicio.desenhar()
+            //inicio.desenhar()
            
         },
         click(){
             mudaTela(telas.jogo)
         },
         atualiza(){
+            globais.chao.atualizar()
         }
     },
 
@@ -156,7 +161,7 @@ const telas = {
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
-            chao.desenhar()
+            globais.chao.desenhar()
             chao.desenhar(chao.W)
             globais.flappy.desenhar()
         },
