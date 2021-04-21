@@ -131,7 +131,6 @@ const telas = {
     }
 }
 
-
 function loop(){
 
     telAtiva.desenhar()
@@ -145,6 +144,14 @@ canvas.addEventListener('click', function(){
         telAtiva.click()
     }
 })
+function verificar(e){
+    if(e.code == 'Space'){
+        if(telAtiva.click){
+            telAtiva.click()
+        }
+        console.log('press')
+    }
+}
 
 mudaTela(telas.start)
 loop()
