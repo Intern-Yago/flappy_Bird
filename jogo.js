@@ -6,6 +6,8 @@ pulou.src='./efeitos/efeitos_pulo.wav'
 const sprites = new Image()
 sprites.src = "./sprites.png"
 
+let frames = 0
+
 const canvas = document.querySelector('canvas')
 const contexto = canvas.getContext('2d')
 
@@ -14,6 +16,7 @@ function colisao(personagem1, personagem2){
     const p2Y = personagem2.y
 
     if(p1Y >= p2Y){
+        globais.chao.x=0
         return true
     }
     else{
@@ -23,7 +26,7 @@ function colisao(personagem1, personagem2){
 function criarFlappy() {
 const flappy = {
     sx: 0,
-    yx: 0,
+    sy: 0,
     W: 33,
     H: 24,
     x: 10, 
@@ -32,7 +35,7 @@ const flappy = {
     g: 0.25,
     pulo:4.6,
     atualiza(){
-        if(colisao(flappy, chao)){
+        if(colisao(flappy, globais.chao)){
             hit.play()
             setTimeout(()=>{
                 mudaTela(telas.start)
@@ -43,10 +46,29 @@ const flappy = {
         flappy.y = flappy.y + flappy.vel
         
     },
+    movimentos: [
+        { sx:0, sy:0, },
+        { sx:0, sy:26, },
+        { sx:0, sy:52, },
+        { sx:0, sy:0, },
+    ],
+    frameAtual:0,
+    atualizaFrame(){
+        const intervalo = 10
+        const passouDoIntervalo = frames%intervalo === 0
+        if(passouDoIntervalo){
+        const base = 1
+        const increment = base + flappy.frameAtual
+        const baseRep = flappy.movimentos.length
+        flappy.frameAtual = increment % baseRep
+        }
+    },
     desenhar(){
+        flappy.atualizaFrame()
+        const {sx, sy} = flappy.movimentos[flappy.frameAtual]
         contexto.drawImage(
             sprites,
-            flappy.sx, flappy.yx,
+            sx,sy,
             flappy.W, flappy.H,
             flappy.x, flappy.y,
             flappy.W, flappy.H,
@@ -60,24 +82,31 @@ const flappy = {
 return flappy
 }
 
-const chao = {
-    sx: 0,
-    sy: 610,
-    W: 224,
-    H: 112,
-    x: 0,
-    y: canvas.height - 112,
-    desenhar(incremento=0){
-        contexto.drawImage(
-            sprites,
-            chao.sx, chao.sy,
-            chao.W, chao.H,
-            chao.x + incremento, chao.y,
-            chao.W, chao.H,
-        )
+function cria_chao(){
+    const chao = {
+        sx: 0,
+        sy: 610,
+        W: 224,
+        H: 112,
+        x: 0,
+        y: canvas.height - 112,
+        atualizar(){
+            const mov = 1
+            const rep = chao.W/2
+            chao.x = (chao.x - mov) % rep
+        },
+        desenhar(incremento=0){
+            contexto.drawImage(
+                sprites,
+                chao.sx, chao.sy,
+                chao.W, chao.H,
+                chao.x + incremento, chao.y,
+                chao.W, chao.H,
+            )
+        }
     }
+    return chao
 }
-
 const back = {
     sx:390,
     sy:0,
@@ -132,12 +161,13 @@ const telas = {
     start: {
         inicializa(){
             globais.flappy = criarFlappy()
+            globais.chao = cria_chao()
         },
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
-            chao.desenhar()
-            chao.desenhar(chao.W)
+            globais.chao.desenhar()
+            globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
             inicio.desenhar()
            
@@ -146,6 +176,7 @@ const telas = {
             mudaTela(telas.jogo)
         },
         atualiza(){
+            globais.chao.atualizar()
         }
     },
 
@@ -154,8 +185,8 @@ const telas = {
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
-            chao.desenhar()
-            chao.desenhar(chao.W)
+            globais.chao.desenhar()
+            globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
         },
         click(){
@@ -163,6 +194,7 @@ const telas = {
         },
         atualiza(){
             globais.flappy.atualiza()
+            globais.chao.atualizar()
         }
     },
 
@@ -177,6 +209,7 @@ function loop(){
     telAtiva.desenhar()
     telAtiva.atualiza()
     
+    frames++
     requestAnimationFrame(loop)
 }
 
