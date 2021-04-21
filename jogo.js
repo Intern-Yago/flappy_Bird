@@ -144,6 +144,46 @@ const inicio = {
     }
 }
 
+function criaCanos(){
+    const canos = {
+        largura: 52,
+        altura: 400,
+        chao:{
+            sX: 0,
+            sY: 169,
+        },
+        ceu: {
+            sX:52,
+            sY:169,
+        },
+        espaco: 80,
+        desenha(){
+            const yRandom = -150
+            const espacamento = 90
+
+            const canoCeuX = 220
+            const canoCeuY = yRandom
+            contexto.drawImage(
+                sprites,
+                canos.ceu.sX, canos.ceu.sY,
+                canos.largura, canos.altura,
+                canoCeuX, canoCeuY,
+                canos.largura, canos.altura
+            )
+
+            const canoChaoX=220
+            const canoChaoY=canos.altura + espacamento + yRandom
+            contexto.drawImage(
+                sprites,
+                canos.chao.sX, canos.chao.sY,
+                canos.largura, canos.altura,
+                canoChaoX, canoChaoY,
+                canos.largura, canos.altura,
+            )
+        },
+    }
+    return canos
+}
 
 const globais = {}
 let telAtiva={}
@@ -160,6 +200,7 @@ const telas = {
         inicializa(){
             globais.flappy = criarFlappy()
             globais.chao = criarChao()
+            globais.canos = criaCanos()
         },
         desenhar(){
             back.desenhar()
@@ -167,7 +208,8 @@ const telas = {
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
-            inicio.desenhar()
+            globais.canos.desenha()
+            //inicio.desenhar()
            
         },
         click(){
