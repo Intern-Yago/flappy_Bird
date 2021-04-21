@@ -183,15 +183,21 @@ function criaCanos(){
                 )   
             })
         },
-        pares: [{   
-            x: 100,
-            y: -150 * (Math.random() + 1),
-        }],
+        pares: [],
         atualiza(){
             const passou100frames = frames%100 === 0
             if(passou100frames){
-            
+                canos.pares.push({ 
+                        x: canvas.width,
+                        y: -150 * (Math.random() + 1),
+                })
             }
+            canos.pares.forEach(function(par){
+                par.x = par.x - 2
+                if(par.x + canos.largura <=0 ){
+                    canos.pares.shift()
+                }
+            })
         }
     }
     return canos
@@ -217,10 +223,10 @@ const telas = {
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
-            globais.chao.desenhar()
-            globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
             globais.canos.desenha()
+            globais.chao.desenhar()
+            globais.chao.desenhar(globais.chao.W)
             //inicio.desenhar()
            
         },
