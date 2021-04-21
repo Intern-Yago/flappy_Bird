@@ -198,6 +198,7 @@ function criaCanos(){
             const cabeca = globais.flappy.y
             const pe = globais.flappy.y + globais.flappy.H
             if(globais.flappy.x >= par.x){
+                globais.placar.atualiza()
                 if(cabeca <= par.canoCeu.y){
                     return true
                 }
@@ -230,6 +231,26 @@ function criaCanos(){
         }
     }
     return canos
+}
+
+function criaPlacar(pontu = 0){
+    const placar = {
+        pontuacao:pontu,
+        atualiza(){
+            const intervalo = 32
+            const passouTime = frames % intervalo === 0
+            if(passouTime){
+                placar.pontuacao++
+            }
+        },
+        desenhar(){
+            contexto.font = '35px "VT323"'
+            contexto.textAlign='right'
+            contexto.fillStyle = 'white'
+            contexto.fillText(`${placar.pontuacao}`, canvas.width - 10, 35)
+        }
+    }
+    return placar
 }
 
 const globais = {}
@@ -268,6 +289,10 @@ const telas = {
 
     //DURANTE O JOGO
     jogo: {
+        inicializa(){
+            ///////////////////////////
+            globais.placar = criaPlacar()
+        },
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
@@ -275,6 +300,8 @@ const telas = {
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
+            /////////////////////////
+            globais.placar.desenhar()
         },
         click(){
             globais.flappy.pula()
@@ -283,6 +310,8 @@ const telas = {
             globais.canos.atualiza()
             globais.chao.atualizar()
             globais.flappy.atualiza()
+            /////////////////////////
+            //globais.placar.atualiza()
         }
     },
 
