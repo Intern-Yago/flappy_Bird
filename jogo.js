@@ -147,6 +147,47 @@ const inicio = {
     }
 }
 
+function criaCanos() {
+    const canos = {
+        W:52,
+        H:400,
+        chao:{
+            sx:0,
+            sy:169,
+        },
+        ceu: {
+            sx: 52,
+            sy: 169,
+        },
+        espaco: 80,
+        desenha(){
+            const Yrandom = -150
+            const espacamento = 60;
+
+            const ceux = 220
+            const ceuy = Yrandom
+            contexto.drawImage(
+                sprites,
+                canos.ceu.sx, canos.ceu.sy,
+                canos.W, canos.H,
+                ceux, ceuy,
+                canos.W, canos.H,
+            )
+
+            const chaox = 220
+            const chaoy = canos.H + espacamento + Yrandom
+            contexto.drawImage(
+                sprites,
+                canos.chao.sx, canos.chao.sy,
+                canos.W, canos.H,
+                chaox, chaoy,
+                canos.W, canos.H,
+            )
+        }
+    }
+    return canos
+}
+
 const globais = {}
 let telAtiva={}
 function mudaTela(novaTela){
@@ -162,6 +203,7 @@ const telas = {
         inicializa(){
             globais.flappy = criarFlappy()
             globais.chao = cria_chao()
+            globais.canos = criaCanos()
         },
         desenhar(){
             back.desenhar()
@@ -169,7 +211,8 @@ const telas = {
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
-            inicio.desenhar()
+            globais.canos.desenha()
+            //inicio.desenhar()
            
         },
         click(){
