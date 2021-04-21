@@ -12,6 +12,9 @@ sprites.src = "./sprites.png"
 const canvas = document.querySelector('canvas')
 const contexto = canvas.getContext('2d')
 
+//
+//[COLISÃO]
+//
 function colisao(personagem1, personagem2){
     const p1Y = personagem1.y + personagem1.H
     const p2Y = personagem2.y
@@ -24,7 +27,9 @@ function colisao(personagem1, personagem2){
     }
 }
 
-//FlappyBird
+//
+//[FlappyBird]
+//
 function criarFlappy() {
 const flappy = {
     sx: 0,
@@ -37,12 +42,11 @@ const flappy = {
     g: 0.25,
     pulo:4.6,
     atualiza(){
+        //colisão com o chão
         if(colisao(flappy, globais.chao)){
             hit.play()
-            setTimeout(()=>{
-                mudaTela(telas.start)
-            }, 400)
-             return
+            mudaTela(telas.fim)
+            return
         }
         //gravidade do flappy
         flappy.vel = flappy.vel + flappy.g
@@ -87,6 +91,9 @@ const flappy = {
 return flappy
 }
 
+//
+//[CHÃO]
+//
 function criarChao(){
     const chao = {
         sx:  0,
@@ -116,6 +123,9 @@ function criarChao(){
     return chao
 }
 
+//
+//[BACKGROUND]
+//
 const back = {
     sx:390,
     sy:0,
@@ -160,6 +170,28 @@ const inicio = {
     }
 }
 
+//mensagem final
+const gameOver = {
+    sx:134,
+    sy:153,
+    W:226,
+    H:200,
+    x:(canvas.width/2) - 226/2,
+    y:50,
+    desenha(){
+        contexto.drawImage(
+            sprites,
+            gameOver.sx,gameOver.sy,
+            gameOver.W,gameOver.H,
+            gameOver.x,gameOver.y,
+            gameOver.W,gameOver.H,
+        )
+    }
+}
+
+//
+//[CANOS]
+//
 function criaCanos(){
     const canos = {
         largura: 52,
@@ -215,7 +247,7 @@ function criaCanos(){
         temColisao(par){
             const cabeca = globais.flappy.y
             const pe = globais.flappy.y + globais.flappy.H
-            if(globais.flappy.x >= par.x){
+            if(globais.flappy.x + globais.flappy.W - 2 >= par.x){
 
                 //Flappy passou pelo cano, atualiza placar
                 globais.placar.atualiza()
@@ -248,7 +280,8 @@ function criaCanos(){
 
                 //colidiu
                 if(canos.temColisao(par)){
-                    mudaTela(telas.start)
+                    hit.play()
+                    mudaTela(telas.fim)
                 }
 
                 //elimina o primeiro cano
@@ -349,7 +382,7 @@ const telas = {
 
     //FIM DO JOGO
     fim: {
-        desenha(){
+        desenhar(){
             gameOver.desenha()
         },
         atualiza(){
@@ -385,5 +418,5 @@ function verificar(e){
     }
 }
 
-mudaTela(telas.fim)
+mudaTela(telas.start)
 loop()
