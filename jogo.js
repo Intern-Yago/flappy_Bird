@@ -1,3 +1,4 @@
+let frames = 0 
 const hit = new Audio()
 hit.src='./efeitos/efeitos_hit.wav'
 const pulou = new Audio()
@@ -32,7 +33,7 @@ const flappy = {
     g: 0.25,
     pulo:4.6,
     atualiza(){
-        if(colisao(flappy, chao)){
+        if(colisao(flappy, globais.chao)){
             hit.play()
             setTimeout(()=>{
                 mudaTela(telas.start)
@@ -43,10 +44,28 @@ const flappy = {
         flappy.y = flappy.y + flappy.vel
         
     },
+    frameAtual: 0,
+    atualizaFrame(){
+        const intervalo = 10
+        const passouTime = frames % intervalo === 0
+        if(passouTime){
+            const base = 1
+            const incremento = base + flappy.frameAtual
+            const baseRepete = flappy.movimentos.length
+            flappy.frameAtual = incremento%baseRepete
+        }
+    },
+    movimentos: [
+        {sX: 0, sY:0},
+        {sX: 0, sY:26},
+        {sX: 0, sY:52},
+    ],
     desenhar(){
+        flappy.atualizaFrame()
+        const {sX, sY} = flappy.movimentos[flappy.frameAtual]
         contexto.drawImage(
             sprites,
-            flappy.sx, flappy.yx,
+            sX, sY,
             flappy.W, flappy.H,
             flappy.x, flappy.y,
             flappy.W, flappy.H,
@@ -61,7 +80,7 @@ return flappy
 }
 function criarChao(){
     const chao = {
-        sx: 0,
+        sx:  0,
         sy: 610,
         W: 224,
         H: 112,
@@ -77,7 +96,10 @@ function criarChao(){
             )
         },
         atualizar(){
-
+            const movDoChao = 1
+            const pete = chao.H /2
+            const movimentacao = chao.x - movDoChao
+            chao.x = movimentacao % pete
         }
     }
     return chao
@@ -145,7 +167,7 @@ const telas = {
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
-            //inicio.desenhar()
+            inicio.desenhar()
            
         },
         click(){
@@ -162,7 +184,7 @@ const telas = {
             back.desenhar()
             back.desenhar(back.W, fundo=false)
             globais.chao.desenhar()
-            chao.desenhar(chao.W)
+            globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
         },
         click(){
@@ -184,6 +206,7 @@ function loop(){
     telAtiva.desenhar()
     telAtiva.atualiza()
     
+    frames++
     requestAnimationFrame(loop)
 }
 
