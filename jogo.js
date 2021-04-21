@@ -11,6 +11,12 @@ const flappy = {
     H: 24,
     dx: 10, 
     dy: 50,
+    vel: 0,
+    g: 0.25,
+    atualiza(){
+        flappy.vel = flappy.vel + flappy.g
+        flappy.dy = flappy.dy + flappy.vel
+    },
     desenhar(){
         contexto.drawImage(
             sprites,
@@ -69,6 +75,9 @@ function loop(){
     chao.desenhar()
     chao.desenhar(chao.W)
     flappy.desenhar()
+
+    flappy.atualiza()
+
     requestAnimationFrame(loop)
 }
 
