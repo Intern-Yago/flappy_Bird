@@ -69,16 +69,82 @@ const back = {
     }
 }
 
+const inicio = {
+    sx:134,
+    sy:0,
+    W:174,
+    H:152,
+    dx:(canvas.width/2) - 174/2,
+    dy:50,
+    desenhar(){
+        contexto.drawImage(
+            sprites,
+            inicio.sx, inicio.sy,
+            inicio.W, inicio.H,
+            inicio.dx, inicio.dy,
+            inicio.W, inicio.H,
+        )
+    }
+}
+
+let telAtiva={}
+function mudaTela(novaTela){
+    telAtiva = novaTela
+}
+
+const telas = {
+    //COMEÇO DO JOGO
+    start: {
+        desenhar(){
+             back.desenhar()
+            back.desenhar(back.W, fundo=false)
+            chao.desenhar()
+            chao.desenhar(chao.W)
+            flappy.desenhar()
+            inicio.desenhar()
+           
+        },
+        click(){
+            mudaTela(telas.jogo)
+        },
+        atualiza(){
+        }
+    },
+
+    //DURANTE O JOGO
+    jogo: {
+        desenhar(){
+            back.desenhar()
+            back.desenhar(back.W, fundo=false)
+            chao.desenhar()
+            chao.desenhar(chao.W)
+            flappy.desenhar()
+        },
+        atualiza(){
+            flappy.atualiza()
+        }
+    },
+
+    //FIM DO JOGO
+    fim: {
+
+    }
+}
+
+
 function loop(){
-    back.desenhar()
-    back.desenhar(back.W, fundo=false)
-    chao.desenhar()
-    chao.desenhar(chao.W)
-    flappy.desenhar()
 
-    flappy.atualiza()
-
+    telAtiva.desenhar()
+    telAtiva.atualiza()
+    
     requestAnimationFrame(loop)
 }
 
+canvas.addEventListener('click', function(){
+    if(telAtiva.click){
+        telAtiva.click()
+    }
+})
+
+mudaTela(telas.start)
 loop()
