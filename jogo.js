@@ -161,29 +161,50 @@ function criaCanos() {
         },
         espaco: 80,
         desenha(){
-            const Yrandom = -150
-            const espacamento = 60;
+            canos.pares.forEach(function(par){
+                const Yrandom = par.y
+                const espacamento = 60;
 
-            const ceux = 220
-            const ceuy = Yrandom
-            contexto.drawImage(
-                sprites,
-                canos.ceu.sx, canos.ceu.sy,
-                canos.W, canos.H,
-                ceux, ceuy,
-                canos.W, canos.H,
-            )
+                const ceux = par.x
+                const ceuy = Yrandom
+                
+                contexto.drawImage(
+                    sprites,
+                    canos.ceu.sx, canos.ceu.sy,
+                    canos.W, canos.H,
+                    ceux, ceuy,
+                    canos.W, canos.H,
+                )
 
-            const chaox = 220
-            const chaoy = canos.H + espacamento + Yrandom
-            contexto.drawImage(
-                sprites,
-                canos.chao.sx, canos.chao.sy,
-                canos.W, canos.H,
-                chaox, chaoy,
-                canos.W, canos.H,
-            )
+                const chaox = par.x
+                const chaoy = canos.H + espacamento + Yrandom
+                contexto.drawImage(
+                    sprites,
+                    canos.chao.sx, canos.chao.sy,
+                    canos.W, canos.H,
+                    chaox, chaoy,
+                    canos.W, canos.H,
+                )
+            })
+        },
+        pares: [],
+        atualiza(){
+            const passouCemFrames = frames % 100 === 0
+            if(passouCemFrames){
+                console.log('Passou')
+                canos.pares.push({
+                    x: canvas.width,
+                    y:-150 * (Math.random() + 1),
+                })   
+            }
+            canos.pares.forEach(function(par){
+                par.x -= 2
+                if(par.x + canos.H <= 0){
+                    canos.pares.shift()
+                }
+            })
         }
+            
     }
     return canos
 }
@@ -208,10 +229,11 @@ const telas = {
         desenhar(){
             back.desenhar()
             back.desenhar(back.W, fundo=false)
+            globais.canos.desenha()
             globais.chao.desenhar()
             globais.chao.desenhar(globais.chao.W)
             globais.flappy.desenhar()
-            globais.canos.desenha()
+            
             //inicio.desenhar()
            
         },
@@ -220,6 +242,7 @@ const telas = {
         },
         atualiza(){
             globais.chao.atualizar()
+            globais.canos.atualiza()
         }
     },
 
