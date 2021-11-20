@@ -1,9 +1,9 @@
 let frames = 0 
 //Add efeitos
-const hit = new Audio()
-hit.src='./efeitos/efeitos_hit.wav'
-const pulou = new Audio()
-pulou.src='./efeitos/efeitos_pulo.wav'
+const hit = document.getElementById("hit")
+const pulou = document.getElementById("pulo")
+const caiu = document.getElementById("caiu")
+const ponto = document.getElementById("ponto")
 
 //select canvas
 const sprites = new Image()
@@ -51,6 +51,7 @@ const flappy = {
         //gravidade do flappy
         flappy.vel = flappy.vel + flappy.g
         flappy.y = flappy.y + flappy.vel
+        
         
     },
     //Animação de bater asas{
@@ -293,16 +294,29 @@ function criaCanos(){
     }
     return canos
 }
-
 function criaPlacar(){
     const placar = {
         pontuacao: 0,
+        divisor: 10,
+        divisao:50,
         atualiza(){
             //intervalo é a quantidade de frames que o Flappy fica dentro do cano
             const intervalo = 32
             const passouTime = frames % intervalo === 0
             if(passouTime){
                 placar.pontuacao++
+                if(placar.pontuacao%placar.divisor===0){
+                    ponto.play()
+                    if(placar.divisao/placar.pontuacao===1){
+                        placar.divisor=100
+                        if(placar.divisao === 50){
+                            placar.divisao+=50
+                            console.log("dificultando");
+                        }else{
+                            placar.divisao+=100
+                        }
+                    }
+                }
             }
         },
         desenhar(){

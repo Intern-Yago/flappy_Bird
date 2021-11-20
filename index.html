@@ -10,20 +10,26 @@
 </head>
 <body onkeyup="verificar(event)">
     <canvas id="game" width="320" height="480"></canvas>
+    <audio src="efeitos/efeitos_caiu.wav" id="caiu"></audio>
+    <audio src="efeitos/efeitos_hit.wav" id="hit"></audio>
+    <audio src="efeitos/efeitos_ponto.wav" id="ponto"></audio>
+    <audio src="efeitos/efeitos_pulo.wav" id="pulo"></audio>
     <style>
         body{
+            margin: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
         }
+        
         canvas{
             border: 1px solid #000;
             display: block;
             margin: 0 auto;
         }
     </style>
-    <script src="./jogo.js"></script>
+    <script src="jogo.js"></script>
 </body>
 </html>

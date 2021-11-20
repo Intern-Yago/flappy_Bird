@@ -1,0 +1,24 @@
+{
+  "name": "flappyjs",
+  "version": "1.0.0",
+  "description": "Flappy_Bird",
+  "main": "electron/index.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "npx electron-packager . --out=packages"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Intern-Yago/flappy_Bird.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Intern-Yago/flappy_Bird/issues"
+  },
+  "homepage": "https://github.com/Intern-Yago/flappy_Bird#readme",
+  "devDependencies": {
+    "electron": "^16.0.1"
+  }
+}
